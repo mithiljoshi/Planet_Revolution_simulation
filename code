@@ -1,0 +1,71 @@
+from vpython import *
+import math
+scene=canvas(width=700,height=700)
+
+#defining constants
+G=0.01
+M_sun=8
+sun=sphere(pos=vector(0,0,0), radius=2,velocity=vector(0,0,0), mass=M_sun,color=color.yellow)
+M_earth=2
+a=10
+b=20
+r0=(a+b)/2
+k=(G*M_sun/r0)
+v_e=(k**0.5)
+
+#defining 3d object
+earth=sphere(pos=vector(a,0,0), radius=0.5,velocity=vector(0,v_e,0), mass=M_earth,color=color.blue)
+earth.trail=curve(color=earth.color)
+
+#define acceleration
+def acc():
+    dr=(earth.pos-sun.pos)
+    force=-G*M_sun*M_earth*norm(dr)/(mag(dr)**2)
+    m=earth.mass
+    return (force/m)
+    
+#define time period
+t=0
+calc=r0**3/(G*M_earth)
+T_orbit= 2*(math.pi)*(calc**0.5)
+dt=T_orbit/1000
+
+M_jupiter=6
+a1=20
+b1=15
+r01=(a+b)/2
+k1=(G*M_sun/r01)
+v_e1=(k**0.5)
+
+#defining 3d object
+jupiter=sphere(pos=vector(a1,0,0), radius=0.5,velocity=vector(0,v_e1,0), mass=M_jupiter,color=color.green)
+jupiter.trail=curve(color=jupiter.color)
+#define acceleration
+
+def acc1():
+    dr1=(jupiter.pos-sun.pos)
+    force1=-G*M_sun*M_jupiter*norm(dr1)/(mag(dr1)**2)
+    m1=jupiter.mass
+    return (force1/m1)
+    
+#define time period
+t1=0
+calc1=r01**3/(G*M_jupiter)
+T_orbit1= 2*(math.pi)*(calc1**0.5)
+dt1=T_orbit1/1000
+print(40)
+    
+
+
+#updating position of earth
+while True:
+    rate(100)
+    earth.velocity=earth.velocity+acc()*dt
+    earth.pos=earth.pos+earth.velocity*dt
+    earth.trail.append(pos=earth.pos)
+    t=t+dt
+    #updating position of jupiter
+    jupiter.velocity=jupiter.velocity+acc1()*dt1
+    jupiter.pos=jupiter.pos+jupiter.velocity*dt1
+    jupiter.trail.append(pos=jupiter.pos)
+    t1=t1+dt1
